@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import Image from "next/image";
-import { useState } from "react"; 
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -10,10 +10,17 @@ export default function Home() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState("");
+  const [error, setError] = useState(null);
 
   const handleChat = async () => {
+    if (!message.trim()) {
+      setError("Please enter a message");
+      return;
+    }
+
     setLoading(true);
     setResponse('');
+    setError(null);
 
     try {
       const res = await fetch('/api/chat', {
@@ -22,11 +29,16 @@ export default function Home() {
         body: JSON.stringify({ message })
       });
 
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
       const data = await res.json();
       console.log("Response:", data);
       setResponse(data.response);
     } catch (error) {
       console.error("Error:", error);
+      setError("Failed to send message");
     } finally {
       setLoading(false);
     }
@@ -46,6 +58,7 @@ export default function Home() {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message here..."
           />
+          {error && <p className="text-red-500">{error}</p>}
           <button
             onClick={handleChat}
             disabled={loading}
