@@ -70,8 +70,12 @@ export default function Home() {
           </button>
         </div>
       </div>
-
-      <div className="mt-6 w-full max-w-md sm:max-w-lg md:max-w-2xl mx-3 p-4 bg-gray-100 rounded-lg text-gray-800 prose max-w-none overflow-x-auto">
+      <button onClick={() => {
+        setMessage("");
+        setResponse("");
+        setError(null);
+      }} className="bg-red-500 cursor-pointer px-6 py-1 rounded-md absolute right-2 bottom-2 fixed">Clear</button>
+      <div className={`${response ? "mt-6" : "hidden"} w-full max-w-md sm:max-w-lg md:max-w-2xl mx-3 p-4 bg-gray-100 rounded-lg text-gray-800 prose max-w-none overflow-x-auto`}>
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeHighlight]}
